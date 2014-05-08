@@ -1,4 +1,7 @@
 package mayo;
+
+import mayo.GameOfLife;
+
 /*
  * Tenemos una rejilla rectangular abierta, en la cual cada celdillapuede estar ocupada o no por un microorganismo.
  * Las celdillas vivas o muertas cambian de una generación a la siguiente según el número de celdillas vecinas que
@@ -28,9 +31,70 @@ public class GameOfLife {
 		this.gemela = new boolean[dim][dim];
 	}
 	
+	//Accesadores
+	public boolean[][] getCuadricula() {
+		return cuadricula;
+	}
+	public void setCuadricula(boolean[][] cuadricula) {
+		this.cuadricula = cuadricula;
+	}
+	public boolean[][] getGemela() {
+		return gemela;
+	}
+	public void setGemela(boolean[][] gemela) {
+		this.gemela = gemela;
+	}
+	
+	//Servicios
+	public void addMicro(int x, int y){
+		this.cuadricula[x][y]=true;//Significa que en la posición que me dan activo el microorganismo vivo
+	}
+	
+	public void display(){
+		for (int i = 1; i < this.cuadricula.length-1; i++) {//Empezamos desde la fila 1 porque la tenemos sobredimensionada la tabla
+			//LENGTH es la longitud de filas
+			for (int j = 1; j < this.cuadricula[i].length; j++) {//Para cada fila, su longitud (número de columnas)
+				if (this.cuadricula[i][j]==true) {
+					System.out.print(" * ");
+				}else{
+					System.out.print(" 0 ");
+				}
+			}
+			System.out.println();
+		}
+	}
+	
+	public void create(){
+		
+	}
+	
+	public int vecinos(int x, int y){
+		int contador = 0;
+		for (int i = x-1; i <= x+1; i++) {//x-1 es la fila anterior a la que le demos por parámetro, x+1 es la posterior
+										  //Recorre 3 filas en total: la anterior, la propia en la que está y la posterior
+			for (int j = y-1; j <= y+1; j++) {//y-1 es la columna anterior a la que le damos por parámetro, y+1 la posterior
+				if (this.cuadricula[i][j]==true) {
+					++contador;//Contamos todos los vecinos y al propio microorhanismo, luego hjay que descontarlo
+				}
+			}
+		}
+		if (this.cuadricula[x][y]==true) {//Si la casilla está ocupada(microorganismo vivo) lo descontamos 
+										  //para que no cuente como vecino él mismo
+			--contador;
+		}
+		return contador;
+	}
+	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		
+		GameOfLife game = new GameOfLife(10);
+		game.addMicro(3, 3);
+		game.addMicro(3, 4);
+		game.addMicro(3, 5);
+		game.display();//Llamamos al método para mostrarlos
+		
+		System.out.println("Vecinos de 3,4: " + game.vecinos(3, 4));//Para probar si cuenta bien el número de vecinos
+		System.out.println("Vecinos de 3,3: " + game.vecinos(3, 3));
 	}
 
 }
